@@ -48,7 +48,7 @@ export default function SearchBar() {
           type="search"
           variant="standard"
           sx={{ width: 300 }}
-          onChange={handleChange}
+        
         />
     
     </>
