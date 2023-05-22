@@ -1,9 +1,11 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { cardData } from "../components/Cards";
 import { Page404 } from "./Page404";
 import { NavBar } from "../components/NavBar";
-
+import { useEffect, useState } from "react";
+import { Book } from "../models/Book";
+import { getBookById } from "../services/book";
+import CircularProgress from '@mui/material/CircularProgress';
 interface Card {
   id: string;
   title: string;
@@ -14,12 +16,30 @@ interface Card {
 }
 
 export default function BookPreview() {
-  const { id } = useParams();
-  // Use appropriate logic to retrieve the book data for the specified id
+  const { id = "" } = useParams();
+  const [book, setBook] = useState<Book>();
+  const [loading, setLoading] = useState(true);
+  const [error,setError] = useState();
 
-  const book: Card | undefined = cardData.find((card) => card.id === id);
+  useEffect(() =>{
+    getBookById(id)
+      .then(response => {
+        setBook(response.data);
+      })
+      .catch((error) => {
+        setError(error);
+        })
+      .finally(() => {
+        setLoading(false);
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
-  if (!book) {
+  if(loading || !book) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
     // Handle the case when the book data is not available
     return <Page404 />;
   }
@@ -31,7 +51,7 @@ export default function BookPreview() {
         <Grid container spacing={4}>
           <Grid item xs={12} sm={4}>
             <img
-              style={{ width: "100%" }}
+              style={{ width: "70%" }}
               src={book.coverImageURL}
               title={book.title}
               alt={book.title}
@@ -41,7 +61,7 @@ export default function BookPreview() {
             <Typography variant="h3">{book.title}</Typography>
             <Typography variant="body1">by {book.author}</Typography>
             <Divider sx={{ my: 3 }} />
-            <Typography variant="body1" marginBottom={'0.5em'}>{"Owned by ..."}</Typography>
+            <Typography variant="body1" marginBottom={'0.5em'}>  Owned by {book.owner.firstName} {book.owner.lastName}</Typography>
             <Typography variant="body1"  >{"Added on ..."}</Typography>
           </Grid>
         </Grid>

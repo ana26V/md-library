@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
@@ -11,7 +10,7 @@ export default function PaginationButtons() {
         showLastButton
         sx={{
           "& .MuiPaginationItem-root": {
-            fontSize: "1.2rem", // Adjust the font size as needed
+            fontSize: "1.2rem", 
           },
         }}
       />
