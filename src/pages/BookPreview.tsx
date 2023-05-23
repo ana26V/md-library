@@ -5,7 +5,7 @@ import { NavBar } from "../components/NavBar";
 import { useEffect, useState } from "react";
 import { Book } from "../models/Book";
 import { getBookById } from "../services/book";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 interface Card {
   id: string;
   title: string;
@@ -19,23 +19,23 @@ export default function BookPreview() {
   const { id = "" } = useParams();
   const [book, setBook] = useState<Book>();
   const [loading, setLoading] = useState(true);
-  const [error,setError] = useState();
+  const [error, setError] = useState();
 
-  useEffect(() =>{
+  useEffect(() => {
     getBookById(id)
-      .then(response => {
+      .then((response) => {
         setBook(response.data);
       })
       .catch((error) => {
         setError(error);
-        })
+      })
       .finally(() => {
         setLoading(false);
-      })
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  if(loading || !book) {
+  if (loading || !book) {
     return <CircularProgress />;
   }
 
@@ -61,13 +61,16 @@ export default function BookPreview() {
             <Typography variant="h3">{book.title}</Typography>
             <Typography variant="body1">by {book.author}</Typography>
             <Divider sx={{ my: 3 }} />
-            <Typography variant="body1" marginBottom={'0.5em'}>  Owned by {book.owner.firstName} {book.owner.lastName}</Typography>
-            <Typography variant="body1"  >{"Added on ..."}</Typography>
+            <Typography variant="body1" marginBottom={"0.5em"}>
+              {" "}
+              Owned by {book.owner.firstName} {book.owner.lastName}
+            </Typography>
+            <Typography variant="body1">{"Added on ..."}</Typography>
           </Grid>
         </Grid>
         <Divider sx={{ my: 3 }} />
 
-        <Typography variant="h3" marginBottom={'0.8em'}></Typography>
+        <Typography variant="h3" marginBottom={"0.8em"}></Typography>
         <Typography variant="body1">{book.description}</Typography>
       </Box>
     </>

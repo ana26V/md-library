@@ -4,21 +4,20 @@ import { NavBar } from "../components/NavBar";
 import Box from "@mui/material/Box";
 import SearchBar from "../components/SearchBar";
 import { Outlet } from "react-router-dom";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import PaginationButtons from "../components/Pagination";
 import { getAllBooks } from "../services/book";
 import { Book } from "../models/Book";
 
 export function Home() {
-
   const [books, setBooks] = useState<Book[]>([]);
+
   useEffect(() => {
     getAllBooks().then((response) => {
       console.log(response);
       setBooks(response.data);
     });
-  }, [])
-  
+  }, []);
 
   return (
     <>
@@ -35,7 +34,7 @@ export function Home() {
           </Grid>
           <Cards books={books} />
           <Outlet />
-           <PaginationButtons />
+          <PaginationButtons />
         </Container>
       </Box>
     </>

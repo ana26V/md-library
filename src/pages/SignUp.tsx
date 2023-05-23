@@ -13,21 +13,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUp } from "../services/auth";
 
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
 const SignUpSchema = z.object({
-  firstName: z.string().min(4, "First Name field is required!"),
-  lastName: z.string().min(1, "Last Name field is required!"),
+  firstName: z.string().min(2, "First Name field is required!"),
+  lastName: z.string().min(2, "Last Name field is required!"),
   email: z
     .string()
-    .min(1, "Email field is required!")
+    .min(3, "Email field is required!")
     .email("Enter a valid email!"),
-  password: z.string().min(1, "Password field is required!"),
+  password: z.string().min(4, "Password field is required!"),
 });
-
+type FormData = z.infer<typeof SignUpSchema>;
 const theme = createTheme();
 
 export default function SignUp() {
@@ -36,36 +31,24 @@ export default function SignUp() {
   function handleClickLogin() {
     navigate("/login");
   }
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   console.log({
-  //     email: data.get('email'),
-  //     password: data.get('password'),
-  //   });
-  // };
-  const {
-    register,
-    handleSubmit,
-    formState
-  } = useForm({
+
+  const { register, handleSubmit, formState } = useForm({
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
       password: "",
-
     },
     resolver: zodResolver(SignUpSchema),
   });
-  function displayErrors(key = "") {
-    const err = formState.errors[key as keyof LoginCredentials];
+  function showErrorMessages(key = "") {
+    const err = formState.errors[key as keyof FormData];
     return {
       error: Boolean(err),
       helperText: err && err?.message,
     };
   }
-  function onSubmit(credentials: LoginCredentials) {
+  function onSubmit(credentials: FormData) {
     console.log(credentials);
 
     signUp(credentials)
@@ -102,7 +85,7 @@ export default function SignUp() {
               <Grid item xs={12} sm={6}>
                 <TextField
                   {...register("firstName")}
-                  {...displayErrors("firstName")}
+                  {...showErrorMessages("firstName")}
                   autoComplete="given-name"
                   name="firstName"
                   required
@@ -115,7 +98,7 @@ export default function SignUp() {
               <Grid item xs={12} sm={6}>
                 <TextField
                   {...register("lastName")}
-                  {...displayErrors("lastName")}
+                  {...showErrorMessages("lastName")}
                   required
                   fullWidth
                   id="lastName"
@@ -127,7 +110,7 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <TextField
                   {...register("email")}
-                  {...displayErrors("email")}
+                  {...showErrorMessages("email")}
                   required
                   fullWidth
                   id="email"
@@ -139,7 +122,7 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <TextField
                   {...register("password")}
-                  {...displayErrors("password")}
+                  {...showErrorMessages("password")}
                   required
                   fullWidth
                   name="password"

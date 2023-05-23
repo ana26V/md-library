@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -15,8 +14,6 @@ import { login } from "../services/auth";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { yupResolver } from "@hookform/resolvers/yup";
-
 const theme = createTheme();
 
 const UserCredentials = z.object({
@@ -26,14 +23,15 @@ const UserCredentials = z.object({
     .email({ message: "Invalid email address" }),
   password: z.string().min(1, "Password is required"),
 });
+type FormData = z.infer<typeof UserCredentials>;
 
 export function Login() {
-  // const { formValues, registerField } = useForm({
-  //   resolver: yupResolver(UserCredentials)
-  // });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(UserCredentials) });
 
-  
-  const [serverError, setServerError] = React.useState("");
   const navigate = useNavigate();
 
   function handleClickHome() {
@@ -42,32 +40,23 @@ export function Login() {
   function handleClickSignup() {
     navigate("/signup");
   }
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const userCredenstials = {
-      email: data.get("email") as string,
-      password: data.get("password") as string,
-      
-    };
-    login(userCredenstials)
-    .then(() => {
-      navigate("/");
-    })
-    .catch((error) => {
-      setServerError(error);
-    });
-    // validare inainte de login
-    // login(userCredenstials)
-    //   .then(() => {
-    //     navigate("/");
-    //   })
-    //   .catch((error) => {
-    //     setServerError(error);
-    //   });
-   
-  };
 
+  function onSubmit(credentials: FormData) {
+    login(credentials)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log("Error in Login:  ", error);
+      });
+  }
+  function showErrorMessages(key = "") {
+    const err = errors[key as keyof FormData];
+    return {
+      error: Boolean(err),
+      helperText: err && err?.message,
+    };
+  }
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -91,12 +80,13 @@ export function Login() {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             noValidate
             sx={{ mt: 1 }}
           >
             <TextField
-          //    {...registerField("email")}
+              {...register("email")}
+              {...showErrorMessages("email")}
               margin="normal"
               required
               fullWidth
@@ -107,6 +97,8 @@ export function Login() {
               autoFocus
             />
             <TextField
+              {...register("password")}
+              {...showErrorMessages("password")}
               margin="normal"
               required
               fullWidth

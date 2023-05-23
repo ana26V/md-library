@@ -14,7 +14,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import LoginIcon from "@mui/icons-material/Login";
 import BookIcon from "@mui/icons-material/Book";
-const pages = ["Home"];
+const pages = ["Home", "Manage Books"];
 const settings = ["Login"];
 
 export function NavBar() {
@@ -46,9 +46,9 @@ export function NavBar() {
   }
 
   return (
-    <AppBar position="static"  sx={{ margin:0}}>
-      <Container maxWidth="xl" >
-        <Toolbar disableGutters  sx={{ padding: 0 }}>
+    <AppBar position="static" sx={{ margin: 0 }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters sx={{ padding: 0 }}>
           <BookIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h5"
