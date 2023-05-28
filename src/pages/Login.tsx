@@ -1,20 +1,16 @@
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-
 import Link from "@mui/material/Link";
-
 import Box from "@mui/material/Box";
-
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/auth";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-const theme = createTheme();
+import { useState } from "react";
+import { Alert } from "@mui/material";
+import { useAuthContext } from "../contexts/AuthContext";
 
 const UserCredentials = z.object({
   email: z
@@ -32,6 +28,9 @@ export function Login() {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(UserCredentials) });
 
+  const { loginUser } = useAuthContext();
+
+  const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
 
   function handleClickHome() {
@@ -42,12 +41,13 @@ export function Login() {
   }
 
   function onSubmit(credentials: FormData) {
-    login(credentials)
+    loginUser(credentials)
       .then(() => {
         navigate("/");
       })
       .catch((error) => {
         console.log("Error in Login:  ", error);
+        setServerError(error.response.data.message);
       });
   }
   function showErrorMessages(key = "") {
@@ -58,72 +58,73 @@ export function Login() {
     };
   }
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 20,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography component="h1" variant="h4">
+          Sign in
+        </Typography>
+        <Typography component="h5">
+          or
+          <Link href="#" variant="body1" onClick={handleClickHome}>
+            {" explore the app"}
+          </Link>
+        </Typography>
         <Box
-          sx={{
-            marginTop: 20,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          sx={{ mt: 1 }}
         >
-          <Typography component="h1" variant="h4">
-            Sign in
-          </Typography>
-          <Typography component="h5">
-            or
-            <Link href="#" variant="body1" onClick={handleClickHome}>
-              {" explore the app"}
-            </Link>
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit(onSubmit)}
-            noValidate
-            sx={{ mt: 1 }}
+          <TextField
+            {...register("email")}
+            {...showErrorMessages("email")}
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+          />
+          <TextField
+            {...register("password")}
+            {...showErrorMessages("password")}
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+          />
+          {serverError && (
+            <Alert severity="error" style={{ marginTop: "0.9em" }}>
+              {serverError}
+            </Alert>
+          )}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
           >
-            <TextField
-              {...register("email")}
-              {...showErrorMessages("email")}
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              {...register("password")}
-              {...showErrorMessages("password")}
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
+            Sign In
+          </Button>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-
-            <Link href="#" variant="body1" onClick={handleClickSignup}>
-              {"Don't have an account? Sign Up"}
-            </Link>
-          </Box>
+          <Link href="#" variant="body1" onClick={handleClickSignup}>
+            {"Don't have an account? Sign Up"}
+          </Link>
         </Box>
-      </Container>
-    </ThemeProvider>
+      </Box>
+    </Container>
   );
 }

@@ -2,8 +2,7 @@ import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Book } from "../models/Book";
 
-
-interface BookCardProps {
+export interface BookCardProps {
   book: Book;
 }
 
@@ -14,7 +13,6 @@ export function BookCard({ book }: BookCardProps) {
         <CardMedia
           component="img"
           sx={{ height: 400 }}
-          
           image={book.coverImageURL}
           alt={book.title}
           title={book.title}

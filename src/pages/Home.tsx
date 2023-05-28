@@ -1,24 +1,20 @@
-import { Container, Grid, Typography } from "@mui/material";
+import { CircularProgress, Container, Grid, Typography } from "@mui/material";
 import Cards from "../components/Cards";
 import { NavBar } from "../components/NavBar";
 import Box from "@mui/material/Box";
 import SearchBar from "../components/SearchBar";
 import { Outlet } from "react-router-dom";
-import { useState, useEffect } from "react";
 import PaginationButtons from "../components/Pagination";
 import { getAllBooks } from "../services/book";
-import { Book } from "../models/Book";
+import { useFetchData } from "../hooks/useFetchData";
 
 export function Home() {
-  const [books, setBooks] = useState<Book[]>([]);
+  const { data: books } = useFetchData(getAllBooks, [], []);
 
-  useEffect(() => {
-    getAllBooks().then((response) => {
-      console.log(response);
-      setBooks(response.data);
-    });
-  }, []);
-
+  if (!books) {
+    return <CircularProgress />;
+  }
+  console.log(books);
   return (
     <>
       <NavBar />
@@ -26,7 +22,7 @@ export function Home() {
         <Container maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
           <Grid container spacing={2} alignItems="center" marginBottom={"2em"}>
             <Grid item xs={6}>
-              <Typography variant="h1">HOME</Typography>
+              <Typography variant="h3">HOME</Typography>
             </Grid>
             <Grid item xs={6} display="flex" justifyContent="flex-end">
               <SearchBar />

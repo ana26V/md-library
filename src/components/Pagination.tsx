@@ -1,16 +1,16 @@
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 export default function PaginationButtons() {
   return (
-    <Stack spacing={2} marginTop={'2em'}>
+    <Stack spacing={2} marginTop={"2em"}>
       <Pagination
         count={10}
         showFirstButton
         showLastButton
         sx={{
           "& .MuiPaginationItem-root": {
-            fontSize: "1.2rem", 
+            fontSize: "1.2rem",
           },
         }}
       />

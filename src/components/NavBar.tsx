@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -14,8 +13,8 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import LoginIcon from "@mui/icons-material/Login";
 import BookIcon from "@mui/icons-material/Book";
-const pages = ["Home", "Manage Books"];
-const settings = ["Login"];
+import { useAuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -24,13 +23,17 @@ export function NavBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
+  const navigate = useNavigate();
+  const { user, logoutUser } = useAuthContext();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
@@ -39,11 +42,21 @@ export function NavBar() {
     setAnchorElNav(null);
   };
 
-  const navigate = useNavigate();
+  const pages = [
+    {
+      name: "Home",
+      path: "/",
+    },
+    {
+      name: "Manage Books",
+      path: "/manage",
+      visible: !!user,
+    },
+  ];
 
-  function handleClickLogin() {
-    navigate("/login");
-  }
+  const handleButtonClick = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <AppBar position="static" sx={{ margin: 0 }}>
@@ -60,7 +73,6 @@ export function NavBar() {
               display: { xs: "none", md: "flex" },
               fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: ".1rem",
               color: "inherit",
               textDecoration: "none",
             }}
@@ -98,18 +110,22 @@ export function NavBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem
+                  key={page.name}
+                  onClick={() => handleButtonClick(page.path)}
+                >
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
+
           <BookIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
             component="a"
-            href=""
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -123,22 +139,41 @@ export function NavBar() {
           >
             Library
           </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
-            ))}
+            {pages.map(
+              (page) =>
+                (page.name === "Home" || user) && (
+                  <Button
+                    key={page.name}
+                    onClick={() => handleButtonClick(page.path)}
+                    sx={{
+                      my: 2,
+                      color: "white",
+                      display: "block",
+                      fontWeight:
+                        location.pathname === page.path ? "bold" : "normal",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.1)",
+                      },
+                    }}
+                  >
+                    {page.name}
+                  </Button>
+                )
+            )}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Account">
+            <Tooltip
+              title={user ? `${user.firstName} ${user.lastName}` : "Account"}
+            >
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src="/static/images/avatar/2.jpg" />
+                {user ? (
+                  <Avatar>{`${user.firstName[0]}${user.lastName[0]}`}</Avatar>
+                ) : (
+                  <Avatar src="/static/images/avatar/2.jpg" />
+                )}
               </IconButton>
             </Tooltip>
             <Menu
@@ -157,12 +192,20 @@ export function NavBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleClickLogin}>
+              {user ? (
+                <MenuItem key="Logout" onClick={logoutUser}>
                   <LoginIcon sx={{ marginRight: "0.7em" }} />
-                  <Typography textAlign="center"> {setting}</Typography>
+                  <Typography textAlign="center">Logout</Typography>
                 </MenuItem>
-              ))}
+              ) : (
+                <MenuItem
+                  key="Login"
+                  onClick={() => handleButtonClick("/login")}
+                >
+                  <LoginIcon sx={{ marginRight: "0.7em" }} />
+                  <Typography textAlign="center">Login</Typography>
+                </MenuItem>
+              )}
             </Menu>
           </Box>
         </Toolbar>
