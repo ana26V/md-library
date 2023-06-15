@@ -1,11 +1,26 @@
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 
-export default function PaginationButtons() {
+interface PaginationButtonsProps {
+  totalPages: number;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+}
+
+export default function PaginationButtons({
+  totalPages,
+  currentPage,
+  onPageChange,
+}: PaginationButtonsProps) {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
+    onPageChange(page);
+  };
+
   return (
-    <Stack spacing={2} marginTop={"2em"}>
+    <Stack spacing={2} marginTop="2em">
       <Pagination
-        count={10}
+        count={totalPages}
+        page={currentPage}
         showFirstButton
         showLastButton
         sx={{
@@ -13,6 +28,7 @@ export default function PaginationButtons() {
             fontSize: "1.2rem",
           },
         }}
+        onChange={handlePageChange}
       />
     </Stack>
   );

@@ -8,18 +8,22 @@ import { ManageBooks } from "../pages/ManageBooks";
 import { AddBook } from "../pages/AddBook";
 import { useInterceptors } from "../hooks/useInterceptors";
 import { UsersBooks } from "../pages/UsersBooks";
+import { MainLayout } from "../layouts/MainLayout";
 
 export function AppRouter() {
   useInterceptors();
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/book/:id" element={<BookPreview />} />
-      <Route path="/users-books/:_id" element={<UsersBooks />} />
-      <Route path="/manage" element={<ManageBooks />} />
-      <Route path="/addbook" element={<AddBook />} />
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/book/:id" element={<BookPreview />} />
+        <Route path="/users-books/:_id" element={<UsersBooks />} />
+        <Route path="/manage" element={<ManageBooks />} />
+        <Route path="/addbook" element={<AddBook />} />
+        <Route path="/addbook/edit/:id" element={<AddBook />} />
+      </Route>
       <Route path="*" element={<Page404 />} />
     </Routes>
   );

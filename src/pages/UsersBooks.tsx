@@ -1,23 +1,20 @@
 import { CircularProgress, Container, Grid, Typography } from "@mui/material";
-import { NavBar } from "../components/NavBar";
 import Box from "@mui/material/Box";
 import { Outlet, useParams } from "react-router-dom";
-import PaginationButtons from "../components/Pagination";
 import { getBookByUserId } from "../services/book";
 import { useFetchData } from "../hooks/useFetchData";
 import { Page404 } from "./Page404";
-import { BookCard } from "../components/BookCard";
-import { Book } from "../models/Book";
+import Cards from "../components/Cards";
 
 export function UsersBooks() {
   const { _id = "" } = useParams();
   const {
     loading,
     error,
-    data: book,
+    data: userBooks,
   } = useFetchData(() => getBookByUserId(_id), [_id]);
 
-  if (loading || !book) {
+  if (loading || !userBooks) {
     return <CircularProgress />;
   }
 
@@ -25,10 +22,9 @@ export function UsersBooks() {
     return <Page404 />;
   }
 
-  console.log(book);
+  console.log(userBooks);
   return (
     <>
-      <NavBar />
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -44,20 +40,13 @@ export function UsersBooks() {
               color="#01937C"
               fontWeight="bold"
             >
-              {book.user.firstName} {book.user.lastName}
+              {userBooks.user.firstName} {userBooks.user.lastName}
             </Typography>
           </Grid>
 
-          {/* <Cards books={book} /> */}
-          <Grid container spacing={4.5}>
-            {book.books.map((book: Book) => (
-              <Grid item xs={12} sm={6} md={6} lg={3}>
-                <BookCard book={book} />
-              </Grid>
-            ))}
-          </Grid>
+          <Cards books={userBooks.books} />
+
           <Outlet />
-          <PaginationButtons />
         </Container>
       </Box>
     </>

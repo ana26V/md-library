@@ -1,8 +1,6 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { Page404 } from "./Page404";
-import { NavBar } from "../components/NavBar";
-
 import { getBookById } from "../services/book";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useFetchData } from "../hooks/useFetchData";
@@ -16,32 +14,12 @@ interface Card {
 
 export default function BookPreview() {
   const { id = "" } = useParams();
-  //const [book, setBook] = useState<Book>();
-  // const [loading, setLoading] = useState(true);
-  //const [error, setError] = useState();
 
   const {
     loading,
     error,
     data: book,
   } = useFetchData(() => getBookById(id), [id]);
-
-  // useEffect(() => {
-  //   getBookById(id)
-  //     .then((response) => {
-  //       setBook(response.data);
-  //     })
-  //     .catch((error) => {
-  //       setError(error);
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [id]);
-
-  //de ce merge si daca nu se pune id ca dependenta?
-  //const { data: book } = useFetchData<Book>(() => getBookById(id), []);
 
   if (loading || !book) {
     return <CircularProgress />;
@@ -53,7 +31,6 @@ export default function BookPreview() {
 
   return (
     <>
-      <NavBar />
       <Box margin={"2em"}>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={4}>
