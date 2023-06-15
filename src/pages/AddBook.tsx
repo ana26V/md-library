@@ -16,7 +16,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { addBook, editBook, getBookById } from "../services/book";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useFetchData } from "../hooks/useFetchData";
 import { Book } from "../models/Book";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
@@ -223,7 +222,8 @@ export function AddBook() {
                         {showErrorMessages("file").helperText}
                       </Box>
                     )}
-                    {(!selectedImage || selectedImage === book?.coverImageURL) && (
+                    {(!selectedImage ||
+                      selectedImage === book?.coverImageURL) && (
                       <Button
                         component="label"
                         variant="contained"

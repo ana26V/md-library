@@ -1,4 +1,3 @@
-import { useLayoutEffect } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { LoginCredentials, login } from "../services/auth";
 

@@ -4,13 +4,6 @@ import { Page404 } from "./Page404";
 import { getBookById } from "../services/book";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useFetchData } from "../hooks/useFetchData";
-interface Card {
-  id: string;
-  title: string;
-  author: string;
-  coverImageURL: string;
-  description: string;
-}
 
 export default function BookPreview() {
   const { id = "" } = useParams();

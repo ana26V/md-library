@@ -13,7 +13,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useFetchData } from "../hooks/useFetchData";
 import { getMyBooks, deleteBook } from "../services/book";
 import EditIcon from "@mui/icons-material/Edit";
@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 export function ManageBooks() {
   const navigate = useNavigate();
-  const { id = "" } = useParams();
+
   const {
     data: books,
     refetchData,
