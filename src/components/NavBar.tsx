@@ -46,6 +46,7 @@ export function NavBar() {
     {
       name: "Home",
       path: "/",
+      visible: true,
     },
     {
       name: "Manage Books",
@@ -109,14 +110,19 @@ export function NavBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem
-                  key={page.name}
-                  onClick={() => handleButtonClick(page.path)}
-                >
-                  <Typography textAlign="center">{page.name}</Typography>
-                </MenuItem>
-              ))}
+              {pages.map((page) => {
+                if (page.visible) {
+                  return (
+                    <MenuItem
+                      key={page.name}
+                      onClick={() => handleButtonClick(page.path)}
+                    >
+                      <Typography textAlign="center">{page.name}</Typography>
+                    </MenuItem>
+                  );
+                }
+                return null;
+              })}
             </Menu>
           </Box>
 
@@ -143,7 +149,7 @@ export function NavBar() {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map(
               (page) =>
-                (page.name === "Home" || user) && (
+                page.visible && (
                   <Button
                     key={page.name}
                     onClick={() => handleButtonClick(page.path)}

@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Alert } from "@mui/material";
 import { useAuthContext } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const UserCredentials = z.object({
   email: z
@@ -44,6 +45,7 @@ export function Login() {
     loginUser(credentials)
       .then(() => {
         navigate("/");
+        toast.success("Welcome!");
       })
       .catch((error) => {
         console.log("Error in Login:  ", error);

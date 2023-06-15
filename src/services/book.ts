@@ -1,5 +1,5 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { Book } from "../models/Book";
+
+import { Book, BookToAdd } from "../models/Book";
 import { axiosInstance } from "./axios";
 
 
@@ -23,26 +23,32 @@ export function deleteBook(bookId: string) {
 }
 
 
-export function addBook(data: any) {
-    // const formData = new FormData();
-    // formData.append("title", data.title);
-    // formData.append("author", data.author);
-    // formData.append("description", data.description);
-    // formData.append("file", data.coverImage);
+export function addBook(data: BookToAdd) {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("author", data.author);
+    formData.append("description", data.description);
+    formData.append("file", data.file);
 
-
-    return axiosInstance.post('/book', data
+    return axiosInstance.post('/book/', formData
     );
-
 }
 
-// export function searchBooks(query: string) {
-//     return axiosInstance.get(`/book/search?limit=6&search=${query}&offset=0`)
-// }  ///book/search?search=Karamazov
+export function editBook(data: any, bookId: string) {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("author", data.author);
+    formData.append("description", data.description);
+    if (data.file instanceof File) {
+        formData.append("file", data.file)
+    }
+    return axiosInstance.put(`/book/${bookId}`, formData
+    );
+}
+
 export function searchBooks(query: string, limit: number, offset: number) {
-    return axiosInstance.get(`/book/search?limit=${limit}&search=${query}&offset=${offset}`);
-}
-
-export function getPaginatedBooks(limit: number, offset: number) {
-    return axiosInstance.get(`/book/search?limit=${limit}&offset=${offset}`);
+    return axiosInstance.get<{
+        totalCount: number,
+        results: Book[]
+    }>(`/book/search?limit=${limit}&search=${query}&offset=${offset}`);
 }

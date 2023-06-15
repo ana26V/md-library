@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signUp } from "../services/auth";
 import { useState } from "react";
 import { Alert } from "@mui/material";
+import { toast } from "react-toastify";
 
 const SignUpSchema = z
   .object({
@@ -68,6 +69,7 @@ export default function SignUp() {
     signUp(credentials)
       .then(() => {
         navigate("/login");
+        toast.success("Successfully created account!");
       })
       .catch((error) => {
         console.log("Error in SignUp:  ", error);
