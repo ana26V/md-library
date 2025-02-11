@@ -6,4 +6,4 @@ The app also features a library where all books from users are displayed. Users 
 
 <br>
 
-[Demo](https://aplicatie-carti.netlify.app/))
+[Demo](https://aplicatie-carti.netlify.app/)
